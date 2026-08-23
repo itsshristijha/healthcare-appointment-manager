@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import client from '../../api/client';
 
+const NETMEDS_HEALTHSTORE_URL = 'https://www.netmeds.com/sections/healthstore?source_attribution=ADW-CPC-Search-NMS-Brand&utm_source=ADW-CPC-Search-NMS-Brand&utm_medium=CPC&utm_campaign=ADW-CPC-Search-NMS-Brand&gad_source=1&gad_campaignid=16560805591&gbraid=0AAAAADRV5NhQPRWOomaVRlSqd6MktLNUH&gclid=CjwKCAjwtKrUBhAhEiwAr77ZopqxGjF2O4-iUYaykAEyhQJKtttE94QRLf4S58WP6gNruENOQHS_sRoC9xoQAvD_BwE';
+
 export default function MedicationReminders() {
   const [reminders, setReminders] = useState([]);
   const [error, setError] = useState('');
@@ -18,7 +20,17 @@ export default function MedicationReminders() {
 
   return (
     <div className="page">
-      <h1>Medication reminders</h1>
+      <div className="page-header">
+        <h1>Medication reminders</h1>
+        <a
+          className="btn btn-primary"
+          href={NETMEDS_HEALTHSTORE_URL}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buy medicines on Netmeds
+        </a>
+      </div>
       {error && <div className="alert alert-error">{error}</div>}
       {loading ? (
         <p>Loading...</p>

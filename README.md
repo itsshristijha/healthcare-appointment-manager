@@ -1,4 +1,5 @@
 # Healthcare Appointment & Follow-up Manager
+#Frontend(VERCEL):https://frontend-qaj4pzlma-shristijha538-1369s-projects.vercel.app
 
 A full-stack clinic platform with separate portals for **patients**, **doctors**, and an **admin**. Patients book appointments and describe symptoms in advance; an LLM produces a pre-visit summary with an urgency level for the doctor; after the visit, the doctor's clinical notes are turned into a plain-language summary for the patient. Both sides get email confirmations and Google Calendar events, kept in sync through reschedules and cancellations.
 

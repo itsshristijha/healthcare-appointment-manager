@@ -54,7 +54,6 @@ export default function BookAppointment() {
 
   async function loadSlots(doctor, chosenDate) {
     setError('');
-    setSelectedSlot(null);
     try {
       const res = await client.get(`/doctors/${doctor.id}/slots`, { params: { date: chosenDate } });
       setSlots(res.data.slots);

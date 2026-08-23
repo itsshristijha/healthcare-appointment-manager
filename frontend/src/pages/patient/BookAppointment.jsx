@@ -19,7 +19,6 @@ export default function BookAppointment() {
   const [date, setDate] = useState(todayPlus(1));
   const [slots, setSlots] = useState([]);
   const [onLeave, setOnLeave] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState(null);
   const [hold, setHold] = useState(null);
   const [symptomText, setSymptomText] = useState('');
   const [error, setError] = useState('');
@@ -86,7 +85,6 @@ export default function BookAppointment() {
         slotEnd: slot.end,
       });
       setHold(res.data.hold);
-      setSelectedSlot(slot);
       setStep(3);
     } catch (err) {
       setError(err.message);

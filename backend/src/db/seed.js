@@ -68,6 +68,42 @@ async function seed() {
     },
   });
 
+  const doctorUser3 = await upsertUser({
+    name: 'Dr. Priya Sharma',
+    email: 'priya.sharma@clinic.example.com',
+    password: 'Doctor@123',
+    role: 'doctor',
+    phone: '+91-9000000003',
+  });
+  await DoctorProfile.findOrCreate({
+    where: { userId: doctorUser3.id },
+    defaults: {
+      userId: doctorUser3.id,
+      specialization: 'Dermatologist',
+      bio: 'MBBS, MD Dermatology - 10 years of experience in skin care.',
+      workingHours: DEFAULT_HOURS,
+      slotDurationMinutes: 30,
+    },
+  });
+
+  const doctorUser4 = await upsertUser({
+    name: 'Dr. Vikram Singh',
+    email: 'vikram.singh@clinic.example.com',
+    password: 'Doctor@123',
+    role: 'doctor',
+    phone: '+91-9000000004',
+  });
+  await DoctorProfile.findOrCreate({
+    where: { userId: doctorUser4.id },
+    defaults: {
+      userId: doctorUser4.id,
+      specialization: 'Pediatrician',
+      bio: 'MBBS, MD Pediatrics - 9 years of experience caring for children.',
+      workingHours: DEFAULT_HOURS,
+      slotDurationMinutes: 20,
+    },
+  });
+
   const patient = await upsertUser({
     name: 'Sukant Jha',
     email: 'patient@example.com',
@@ -81,6 +117,8 @@ async function seed() {
   console.log('Admin login:   admin@clinic.example.com / Admin@123');
   console.log('Doctor login:  asha.mehta@clinic.example.com / Doctor@123');
   console.log('Doctor login:  rohan.kapoor@clinic.example.com / Doctor@123');
+  console.log('Doctor login:  priya.sharma@clinic.example.com / Doctor@123');
+  console.log('Doctor login:  vikram.singh@clinic.example.com / Doctor@123');
   console.log('Patient login: patient@example.com / Patient@123');
   console.log('----------------------------------------------------');
   process.exit(0);

@@ -53,6 +53,8 @@ Created by `npm run seed` (backend):
 | Admin   | `admin@clinic.example.com`          | `Admin@123`  |
 | Doctor  | `asha.mehta@clinic.example.com`     | `Doctor@123` |
 | Doctor  | `rohan.kapoor@clinic.example.com`   | `Doctor@123` |
+| Doctor  | `priya.sharma@clinic.example.com`   | `Doctor@123` |
+| Doctor  | `vikram.singh@clinic.example.com`   | `Doctor@123` |
 | Patient | `patient@example.com`               | `Patient@123`|
 
 Patients can also self-register from the app; doctor and admin accounts are created by an admin (`POST /api/admin/doctors`) so only the clinic controls who gets clinical/admin access.

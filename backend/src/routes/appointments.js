@@ -212,6 +212,24 @@ router.get(
 );
 
 router.get(
+  '/doctor/patients/:patientId/history',
+  requireRole('doctor'),
+  asyncHandler(async (req, res) => {
+    const profile = await DoctorProfile.findOne({ where: { userId: req.user.id } });
+    if (!profile) throw new HttpError(404, 'Doctor profile not found.');
+
+    const appointments = await Appointment.findAll({
+      where: { doctorId: profile.id, patientId: req.params.patientId },
+      include: [{ model: User, as: 'patient', attributes: ['id', 'name', 'email', 'phone'] }],
+      order: [['slotStart', 'DESC']],
+    });
+    if (appointments.length === 0) throw new HttpError(404, 'Patient history not found.');
+
+    res.json({ patient: appointments[0].patient, appointments });
+  })
+);
+
+router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const appointment = await Appointment.findByPk(req.params.id, {

@@ -12,6 +12,8 @@ export default function DoctorDashboard() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [openId, setOpenId] = useState(null);
+  const [history, setHistory] = useState(null);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -37,6 +39,18 @@ export default function DoctorDashboard() {
       await load();
     } catch (err) {
       alert(err.message);
+    }
+  }
+
+  async function viewHistory(patientId) {
+    setHistoryLoading(true);
+    try {
+      const res = await client.get(`/appointments/doctor/patients/${patientId}/history`);
+      setHistory(res.data);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setHistoryLoading(false);
     }
   }
 
@@ -75,6 +89,9 @@ export default function DoctorDashboard() {
               )}
 
               <div className="row-actions">
+                <button className="btn btn-secondary" onClick={() => viewHistory(a.patient.id)} disabled={historyLoading}>
+                  View patient history
+                </button>
                 {a.status === 'confirmed' && (
                   <button className="btn btn-primary" onClick={() => setOpenId(openId === a.id ? null : a.id)}>
                     {openId === a.id ? 'Close form' : 'Submit post-visit notes'}
@@ -100,6 +117,26 @@ export default function DoctorDashboard() {
                   <summary>View submitted summary</summary>
                   <p>{a.postVisitSummary.summaryText}</p>
                 </details>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {history && (
+        <div className="card">
+          <div className="appointment-card-top">
+            <h2>{history.patient.name} - Patient history</h2>
+            <button className="btn btn-ghost" onClick={() => setHistory(null)}>Close</button>
+          </div>
+          <p className="muted">{history.patient.email}{history.patient.phone ? ` - ${history.patient.phone}` : ''}</p>
+          {history.appointments.map((visit) => (
+            <div className="pre-visit-box" key={visit.id}>
+              <strong>{new Date(visit.slotStart).toLocaleString()} - {visit.status}</strong>
+              {visit.symptomText && <p><strong>Symptoms:</strong> {visit.symptomText}</p>}
+              {visit.postVisitNotes && <p><strong>Clinical notes:</strong> {visit.postVisitNotes}</p>}
+              {visit.postVisitSummary?.summaryText && <p><strong>Summary:</strong> {visit.postVisitSummary.summaryText}</p>}
+              {visit.prescription?.length > 0 && (
+                <p><strong>Prescription:</strong> {visit.prescription.map((item) => item.medication).join(', ')}</p>
               )}
             </div>
           ))}

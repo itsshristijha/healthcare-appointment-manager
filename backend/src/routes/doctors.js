@@ -1,11 +1,40 @@
 const express = require('express');
 const { Op } = require('sequelize');
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, requireRole } = require('../middleware/auth');
 const { asyncHandler, HttpError } = require('../middleware/errorHandler');
 const { DoctorProfile, User, DoctorLeave, Appointment, SlotHold } = require('../models');
 const { generateSlotsForDate } = require('../utils/slots');
+const { markDoctorLeave } = require('../services/leaveService');
 
 const router = express.Router();
+
+router.post(
+  '/me/leave',
+  requireAuth,
+  requireRole('doctor'),
+  asyncHandler(async (req, res) => {
+    const { date, reason } = req.body;
+    if (!date) throw new HttpError(400, 'date (YYYY-MM-DD) is required.');
+    const profile = await DoctorProfile.findOne({
+      where: { userId: req.user.id },
+      include: [{ model: User, as: 'user', attributes: { exclude: ['passwordHash', 'googleRefreshToken'] } }],
+    });
+    if (!profile) throw new HttpError(404, 'Doctor profile not found.');
+    res.status(201).json(await markDoctorLeave(profile, date, reason));
+  })
+);
+
+router.delete(
+  '/me/leave/:date',
+  requireAuth,
+  requireRole('doctor'),
+  asyncHandler(async (req, res) => {
+    const profile = await DoctorProfile.findOne({ where: { userId: req.user.id } });
+    if (!profile) throw new HttpError(404, 'Doctor profile not found.');
+    await DoctorLeave.destroy({ where: { doctorId: profile.id, date: req.params.date } });
+    res.json({ ok: true });
+  })
+);
 
 // Public-ish (any logged-in user) search by specialization / name.
 router.get(

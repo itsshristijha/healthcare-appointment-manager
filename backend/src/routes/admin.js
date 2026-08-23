@@ -6,6 +6,7 @@ const { asyncHandler, HttpError } = require('../middleware/errorHandler');
 const { sequelize, User, DoctorProfile, DoctorLeave, Appointment, NotificationLog } = require('../models');
 const { sendEmail } = require('../services/emailService');
 const calendarService = require('../services/calendarService');
+const { markDoctorLeave } = require('../services/leaveService');
 
 const router = express.Router();
 router.use(requireAuth, requireRole('admin'));
@@ -102,61 +103,8 @@ router.post(
     });
     if (!profile) throw new HttpError(404, 'Doctor not found.');
 
-    const [leave] = await DoctorLeave.findOrCreate({
-      where: { doctorId: profile.id, date },
-      defaults: { doctorId: profile.id, date, reason },
-    });
-
-    // Find all still-active appointments for this doctor on that date.
-    const dayStart = new Date(`${date}T00:00:00`);
-    const dayEnd = new Date(`${date}T23:59:59.999`);
-    const affected = await Appointment.findAll({
-      where: {
-        doctorId: profile.id,
-        status: { [Op.in]: ['pending', 'confirmed'] },
-        slotStart: { [Op.between]: [dayStart, dayEnd] },
-      },
-      include: [{ model: User, as: 'patient', attributes: { exclude: ['passwordHash', 'googleRefreshToken'] } }],
-    });
-
-    const notified = [];
-    for (const appt of affected) {
-      appt.status = 'cancelled';
-      appt.cancelReason = `Doctor on leave${reason ? `: ${reason}` : ''}`;
-      await appt.save();
-
-      // Best-effort calendar cleanup; failures here must not block the
-      // cancellation itself.
-      if (appt.calendarEventIdPatient) {
-        await calendarService.deleteEvent({
-          refreshToken: appt.patient?.googleRefreshToken,
-          eventId: appt.calendarEventIdPatient,
-        });
-      }
-      if (appt.calendarEventIdDoctor) {
-        await calendarService.deleteEvent({
-          refreshToken: profile.user?.googleRefreshToken,
-          eventId: appt.calendarEventIdDoctor,
-        });
-      }
-
-      await sendEmail({
-        type: 'leave_notice',
-        recipientEmail: appt.patient.email,
-        recipientUserId: appt.patient.id,
-        appointmentId: appt.id,
-        subject: 'Your appointment has been cancelled (doctor on leave)',
-        body:
-          `Hi ${appt.patient.name},\n\nUnfortunately Dr. ${profile.user.name} is on leave on ${date}` +
-          `${reason ? ` (${reason})` : ''}, so your appointment scheduled at ` +
-          `${appt.slotStart.toISOString()} has been cancelled.\n\n` +
-          `Please book a new slot at your convenience. We're sorry for the inconvenience.\n\n` +
-          `- Healthcare Appointment & Follow-up Manager`,
-      });
-      notified.push(appt.patient.email);
-    }
-
-    res.status(201).json({ leave, affectedAppointments: affected.length, notifiedPatients: notified });
+    const result = await markDoctorLeave(profile, date, reason);
+    res.status(201).json(result);
   })
 );
 

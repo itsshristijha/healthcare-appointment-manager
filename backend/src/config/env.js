@@ -37,6 +37,7 @@ module.exports = {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     redirectUri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:4000/api/calendar/oauth/callback',
+    authRedirectUri: process.env.GOOGLE_AUTH_REDIRECT_URI || 'http://localhost:4000/api/auth/google/callback',
   },
 
   medicationReminderCron: process.env.MEDICATION_REMINDER_CRON || '*/15 * * * *',

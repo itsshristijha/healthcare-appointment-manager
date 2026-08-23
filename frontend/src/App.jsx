@@ -21,6 +21,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/patient/login" element={<Login expectedRole="patient" />} />
+          <Route path="/doctor/login" element={<Login expectedRole="doctor" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/settings" element={<ProtectedRoute roles={['patient', 'doctor']}><Settings /></ProtectedRoute>} />
 

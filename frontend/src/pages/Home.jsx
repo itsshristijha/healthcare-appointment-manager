@@ -18,7 +18,8 @@ export default function Home() {
           <Link className="btn btn-primary" to={ROLE_HOME[user.role]}>Go to my dashboard</Link>
         ) : (
           <div className="home-actions">
-            <Link className="btn btn-primary" to="/login">Log in</Link>
+            <Link className="btn btn-primary" to="/patient/login">Patient login</Link>
+            <Link className="btn btn-secondary" to="/doctor/login">Doctor login</Link>
             <Link className="btn btn-secondary" to="/register">Register as a patient</Link>
           </div>
         )}

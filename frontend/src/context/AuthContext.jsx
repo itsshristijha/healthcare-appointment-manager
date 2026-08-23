@@ -20,8 +20,8 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  async function login(email, password) {
-    const res = await client.post('/auth/login', { email, password });
+  async function login(email, password, expectedRole) {
+    const res = await client.post('/auth/login', { email, password, expectedRole });
     localStorage.setItem('ham_token', res.data.token);
     setUser(res.data.user);
     return res.data.user;

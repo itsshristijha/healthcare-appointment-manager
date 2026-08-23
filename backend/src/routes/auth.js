@@ -30,11 +30,14 @@ router.post(
 router.post(
   '/login',
   asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, expectedRole } = req.body;
     if (!email || !password) throw new HttpError(400, 'email and password are required.');
 
     const user = await User.findOne({ where: { email } });
     if (!user) throw new HttpError(401, 'Invalid email or password.');
+    if (expectedRole && user.role !== expectedRole) {
+      throw new HttpError(403, `This is the ${expectedRole} login. Use the correct account.`);
+    }
 
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) throw new HttpError(401, 'Invalid email or password.');

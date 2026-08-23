@@ -72,9 +72,34 @@ a:hover { text-decoration: underline; }
 .auth-switch { margin-top: 10px; font-size: 0.9rem; }
 .demo-hint { margin-top: 16px; font-size: 0.8rem; background: #eff6ff; padding: 10px; border-radius: 8px; color: #1e40af; line-height: 1.5; }
 
-.home-page { display: flex; justify-content: center; padding-top: 40px; }
-.home-hero { max-width: 620px; text-align: center; }
-.home-actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+.home-page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - 66px);
+  overflow: hidden;
+  background-color: #dceceb;
+  background-image: url('https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=2400&q=85');
+  background-size: cover;
+  background-position: center;
+}
+.home-page::before {
+  content: '';
+  position: absolute;
+  inset: 0 48% 0 0;
+  background: rgba(255, 255, 255, 0.9);
+}
+.home-hero {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 72px 28px;
+  text-align: left;
+}
+.home-hero h1 { max-width: 600px; margin: 0 0 20px; font-size: 3.8rem; line-height: 1.05; letter-spacing: 0; }
+.home-hero p { max-width: 560px; color: #475569; font-size: 1.08rem; line-height: 1.7; }
+.home-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
 
 label { display: block; margin-bottom: 14px; font-size: 0.9rem; font-weight: 600; color: #334155; }
 label input, label textarea, label select {
@@ -154,4 +179,10 @@ label input:focus, label textarea:focus, label select:focus { outline: 2px solid
   .app-main { padding: 16px; }
   .navbar { padding: 12px 16px; }
   .auth-card { width: 100%; }
+  .home-page { min-height: calc(100vh - 58px); background-position: 64% center; }
+  .home-page::before { inset: 0; background: rgba(255, 255, 255, 0.86); }
+  .home-hero { padding: 52px 20px; }
+  .home-hero h1 { font-size: 2.35rem; }
+  .home-hero p { font-size: 1rem; }
+  .home-actions { flex-direction: column; align-items: stretch; max-width: 280px; }
 }

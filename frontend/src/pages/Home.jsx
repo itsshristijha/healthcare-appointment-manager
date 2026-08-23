@@ -7,7 +7,7 @@ export default function Home() {
   const { user } = useAuth();
   return (
     <div className="home-page">
-      <div className="card home-hero">
+      <div className="home-hero">
         <h1>Healthcare Appointment &amp; Follow-up Manager</h1>
         <p>
           Book appointments, get an AI pre-visit summary ready for your doctor, receive a

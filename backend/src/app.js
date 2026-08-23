@@ -14,6 +14,15 @@ const app = express();
 app.use(cors({ origin: env.frontendUrl === '*' ? true : env.frontendUrl, credentials: true }));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Healthcare Appointment & Follow-up Manager API',
+    ok: true,
+    health: '/api/health',
+    frontend: env.frontendUrl,
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,

@@ -17,7 +17,7 @@ services:
     plan: free
     rootDir: backend
     buildCommand: npm install
-    startCommand: node src/db/migrate.js && node src/server.js
+    startCommand: node src/db/migrate.js && node src/db/seed.js && node src/server.js
     envVars:
       - key: NODE_ENV
         value: production

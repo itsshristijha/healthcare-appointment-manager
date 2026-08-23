@@ -49,7 +49,8 @@ export default function Login({ expectedRole }) {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? 'Logging in...' : 'Log in'}</button>
-        <a className="btn btn-secondary" href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/auth/google/start${expectedRole ? `?role=${expectedRole}` : ''}`}>
+        <a className="btn btn-google" href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/auth/google/start${expectedRole ? `?role=${expectedRole}` : ''}`}>
+          <span className="google-mark" aria-hidden="true">G</span>
           Continue with Google
         </a>
         {expectedRole === 'patient' && <p className="auth-switch">New patient? <Link to="/register">Register here</Link></p>}

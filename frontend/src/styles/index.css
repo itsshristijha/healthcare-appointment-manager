@@ -55,7 +55,20 @@ a:hover { text-decoration: underline; }
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 
 .auth-page { display: flex; justify-content: center; padding-top: 40px; }
-.auth-card { width: 380px; }
+.auth-card { width: 380px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); }
+.auth-card .btn { width: 100%; }
+.auth-card .btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  background: #fff;
+  color: #1f2937;
+  border-color: #cbd5e1;
+}
+.auth-card .btn-google:hover:not(:disabled) { background: #f8fafc; border-color: #94a3b8; }
+.google-mark { font-size: 1.1rem; font-weight: 800; color: #4285f4; }
 .auth-switch { margin-top: 10px; font-size: 0.9rem; }
 .demo-hint { margin-top: 16px; font-size: 0.8rem; background: #eff6ff; padding: 10px; border-radius: 8px; color: #1e40af; line-height: 1.5; }
 
@@ -140,4 +153,5 @@ label input:focus, label textarea:focus, label select:focus { outline: 2px solid
 @media (max-width: 640px) {
   .app-main { padding: 16px; }
   .navbar { padding: 12px 16px; }
+  .auth-card { width: 100%; }
 }

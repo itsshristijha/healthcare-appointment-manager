@@ -15,11 +15,11 @@ function googleOAuthClient() {
 }
 
 router.get('/google/start', (req, res) => {
-  const role = ['patient', 'doctor'].includes(req.query.role) ? req.query.role : 'patient';
+  const role = ['patient', 'doctor'].includes(req.query.role) ? req.query.role : null;
   if (!env.google.clientId || !env.google.clientSecret) {
     return res.status(503).send('Google sign-in is not configured on this server.');
   }
-  const state = signToken({ id: crypto.randomUUID(), role, type: 'google_auth' });
+  const state = signToken({ id: crypto.randomUUID(), role: role || 'any', type: 'google_auth' });
   const url = googleOAuthClient().generateAuthUrl({
     access_type: 'offline',
     scope: ['openid', 'email', 'profile'],
@@ -48,7 +48,9 @@ router.get('/google/callback', asyncHandler(async (req, res) => {
   if (!googleUser.email || !googleUser.verified_email) throw new HttpError(401, 'Google account email is not verified.');
 
   let user = await User.findOne({ where: { email: googleUser.email } });
-  if (user && user.role !== authState.role) throw new HttpError(403, `This is the ${user.role} account. Use the correct login.`);
+  if (user && authState.role !== 'any' && user.role !== authState.role) {
+    throw new HttpError(403, `This is the ${user.role} account. Use the correct login.`);
+  }
   if (!user) {
     if (authState.role !== 'patient') throw new HttpError(403, 'Doctor accounts must be created by the clinic admin first.');
     user = await User.create({
@@ -60,7 +62,7 @@ router.get('/google/callback', asyncHandler(async (req, res) => {
   }
 
   const token = signToken(user);
-  const loginPath = authState.role === 'doctor' ? '/doctor/login' : '/patient/login';
+  const loginPath = user.role === 'doctor' ? '/doctor/login' : user.role === 'patient' ? '/patient/login' : '/login';
   res.redirect(`${env.frontendUrl}${loginPath}?token=${encodeURIComponent(token)}`);
 }));
 
